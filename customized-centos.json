@@ -1,0 +1,40 @@
+{
+  "variables": {
+    "region": "cn-shanghai",
+    "image_name": "aoxn_image_{{timestamp}}",
+    "source_image": "centos_7_06_64_20G_alibase_20190619.vhd",
+    "instance_type": "ecs.c6.xlarge",
+    "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
+    "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
+  },
+  "builders": [
+    {
+      "type": "alicloud-ecs",
+      "access_key": "{{user `access_key`}}",
+      "secret_key": "{{user `secret_key`}}",
+      "region": "{{user `region`}}",
+      "image_name": "{{user `image_name`}}",
+      "source_image": "{{user `source_image`}}",
+      "ssh_username": "root",
+      "instance_type": "{{user `instance_type`}}",
+      "skip_image_validation": "true",
+      "io_optimized": "true",
+      "vpc_id": "vpc-uf6ne4e9hvnw8en91500m",
+      "vswitch_id": "vsw-uf6w68m073in7n4d2z5c6"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/updateKernel.sh",
+        "scripts/reboot.sh",
+        "scripts/cleanUpKerneles.sh",
+        "config/default.sh",
+        "scripts/updateDNS.sh",
+        "preinstall/install.sh"
+      ],
+      "expect_disconnect": true
+    }
+  ]
+}
